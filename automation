@@ -1,0 +1,17 @@
+import praw
+from moviepy.editor import TextClip, CompositeVideoClip, ColorClip
+
+# Reddit API setup
+reddit = praw.Reddit(client_id='YOUR_CLIENT_ID',
+                     client_secret='YOUR_CLIENT_SECRET',
+                     user_agent='TikTokBot/1.0')
+
+# Get top posts
+subreddit = reddit.subreddit('AskReddit')
+top_post = next(subreddit.top(time_filter='day', limit=1))
+
+# Create video
+background = ColorClip(size=(1080, 1920), color=(0, 0, 0), duration=10)
+text = TextClip(top_post.title, fontsize=70, color='white', size=(1000, 1800))
+video = CompositeVideoClip([background, text.set_position('center')])
+video.write_videofile("output.mp4", fps=24)
